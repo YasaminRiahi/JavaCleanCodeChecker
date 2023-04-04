@@ -2,7 +2,9 @@ package ir.ac.kntu;
 
 public class NamingStyle {
     private String className;
+
     private String methodName;
+
     private String variableName;
 
     private String isVariable;

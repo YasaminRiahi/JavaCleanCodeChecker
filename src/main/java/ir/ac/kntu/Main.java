@@ -1,12 +1,9 @@
 package ir.ac.kntu;
 
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Scanner;
-import java.util.Stack;
 
 public class Main {
     public static int switchCount = 0;
@@ -16,21 +13,16 @@ public class Main {
         String fileName = scanner.nextLine();
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("src/ir/ac/kntu/" + fileName));
-            int countLine = 0;
-            int countEmptyLine = 0;
-            int countForImport = 0;
-            int tab = 0;
+            reader = new BufferedReader(new FileReader("src/main/java/ir/ac/kntu/" + fileName));
+            int countLine = 0, countEmptyLine = 0, countForImport = 0, tab = 0;
             String line = reader.readLine();
             while (line != null) {
                 if (line.equals("")) {
                     countEmptyLine++;
                     countForImport++;
-                }
-                if (line.contains("package")) {
+                } else if (line.contains("package")) {
                     countForImport++;
-                }
-                if (line.contains("import")) {
+                } else if (line.contains("import")) {
                     countForImport++;
                 }
                 countLine++;
@@ -43,13 +35,13 @@ public class Main {
                 }
                 tab = findNumberOfTabs(line, tab);
                 checkLineLength(line, countLine);
-                checkEveryThing(line, countLine, countEmptyLine, countForImport);
+                checkCloseBraces(removeStartingSpace(line), countLine);
+                checkAll(line, countLine, countEmptyLine, countForImport);
+                checkSemicolon(line, countLine);
                 line = reader.readLine();
             }
             if (switchCount != 0) {
-                System.out.println("There is no default for your last switch!");
-                System.out.println("Please add a default");
-                System.out.println("_____________________________________________________________________");
+                System.out.println("There is no default for your last switch!Please add a default");
             }
             reader.close();
         } catch (IOException e) {
@@ -66,8 +58,7 @@ public class Main {
     }
 
     public static void giveSuggestion(String line) {
-        int howManySpace = 0;
-        int i = 0;
+        int howManySpace = 0, i = 0;
         while (line.charAt(i) != '(' && line.charAt(i) != '=' && line.charAt(i) != '"') {
             howManySpace++;
             i++;
@@ -84,11 +75,10 @@ public class Main {
             if (!toKnow.equals("nothing")) {
                 lines[k] = toKnow;
             } else {
-                System.out.println("Yoc can break this line anyway you want!");
+                System.out.println("You can break this line anyway you want!");
             }
         }
         for (i = 0; i < lines.length; i++) {
-            int count = 0;
             if (i + 1 < lines.length) {
                 if (!lines[i].equals("")) {
                     int length = lines[i].length() - removeStartingSpace(lines[i + 1]).length();
@@ -125,15 +115,9 @@ public class Main {
     }
 
     public static boolean isOkToBreak(char character) {
-        if (Character.compare(character, '+') == 0 || Character.compare(character, '-') == 0) {
+        if (character == '+' || character == '-' || character == '*' || character == '/' || character == '%') {
             return true;
-        } else if (Character.compare(character, '*') == 0 || Character.compare(character, '/') == 0) {
-            return true;
-        } else if (Character.compare(character, '%') == 0 || Character.compare(character, '^') == 0) {
-            return true;
-        } else if (Character.compare(character, '&') == 0 || Character.compare(character, '|') == 0) {
-            return true;
-        } else if (Character.compare(character, ',') == 0) {
+        } else if (character == '^' || character == '&' || character == '|' || character == ',') {
             return true;
         }
         return false;
@@ -144,14 +128,11 @@ public class Main {
             for (int i = 0; i < line.length(); i++) {
                 if (line.charAt(i) == '{') {
                     tab += 4;
-                }
-                if (i + 3 < line.length() && line.substring(i, i + 4).equals("case")) {
+                } else if (i + 3 < line.length() && line.substring(i, i + 4).equals("case")) {
                     tab += 4;
-                }
-                if (line.charAt(i) == '}') {
+                } else if (line.charAt(i) == '}') {
                     tab -= 4;
-                }
-                if (i + 4 < line.length() && line.substring(i, i + 5).equals("break")) {
+                } else if (i + 4 < line.length() && line.substring(i, i + 5).equals("break")) {
                     tab -= 4;
                 }
             }
@@ -160,40 +141,31 @@ public class Main {
     }
 
     public static void isTabEnough(String line, int tab, int whichLine) {
-        int i = 0;
-        int count = 0;
-        if (line != "") {
+        int i = 0, count = 0;
+        if (!line.equals("")) {
             while (i < line.length() && line.charAt(i) == ' ') {
                 count++;
                 i++;
             }
             if (count != tab) {
                 if (count > tab) {
-                    System.out.println("You have too much space in the first of line " + whichLine + " !");
-                    System.out.println("Please remove " + (count - tab) + " space(s)");
-                    System.out.println("_____________________________________________________________________");
+                    System.out.println("Please remove " + (count - tab) + " space(s) in line " + whichLine);
                 } else {
-                    System.out.println("Your spaces in line " + whichLine + " is not enough!");
-                    System.out.println("Please add " + (tab - count) + " space(s)");
-                    System.out.println("_____________________________________________________________________");
+                    System.out.println("Please add " + (tab - count) + " space(s) in line " + whichLine);
                 }
+                System.out.println("_____________________________________________________________________");
             }
         }
     }
 
-    public static void checkEveryThing(String line, int whichLine, int emptyLine, int forImport) {
+    public static void checkAll(String line, int whichLine, int empty, int forImport) {
         String withoutStartingSpace = removeStartingSpace(line);
-        int length = withoutStartingSpace.length();
-        checkCloseBraces(withoutStartingSpace, whichLine);
         if (line.contains("package")) {
-            checkPackage(whichLine, emptyLine);
-            findAndCheckSemicolon(withoutStartingSpace, whichLine);
+            checkPackage(whichLine, empty);
         } else if (line.contains("import") && forImport != whichLine) {
             writeImportError(whichLine);
-            findAndCheckSemicolon(withoutStartingSpace, whichLine);
         } else if (findVariables(withoutStartingSpace) == true) {
             findAndCheckVariableName(withoutStartingSpace, whichLine);
-            findAndCheckSemicolon(withoutStartingSpace, whichLine);
         } else if (line.contains("public")) {
             checkNames(withoutStartingSpace, whichLine);
         } else if (line.contains("for")) {
@@ -201,7 +173,7 @@ public class Main {
             checkForVariable(withoutStartingSpace, whichLine);
         } else if (line.contains("while")) {
             checkWhileLine(withoutStartingSpace, whichLine);
-        } else if (length > 1 && withoutStartingSpace.substring(0, 2).equals("if")) {
+        } else if (withoutStartingSpace.length() > 1 && withoutStartingSpace.substring(0, 2).equals("if")) {
             checkIfLine(withoutStartingSpace, whichLine);
         } else if (line.contains("else") && withoutStartingSpace.charAt(0) != '}') {
             moveElse(whichLine);
@@ -212,9 +184,9 @@ public class Main {
             }
         } else if (line.contains("else") && withoutStartingSpace.charAt(0) == '}') {
             if (line.contains("else if")) {
-                checkElseLine(withoutStartingSpace.substring(1, length), whichLine, 1);
+                checkElseLine(withoutStartingSpace.substring(1, withoutStartingSpace.length()), whichLine, 1);
             } else {
-                checkElseLine(withoutStartingSpace.substring(1, length), whichLine, 2);
+                checkElseLine(withoutStartingSpace.substring(1, withoutStartingSpace.length()), whichLine, 2);
             }
         } else if (line.contains("switch")) {
             switchCount++;
@@ -228,6 +200,17 @@ public class Main {
         } else if (line.contains("case")) {
             checkCase(withoutStartingSpace, whichLine);
         } else if (!line.equals("") && !withoutStartingSpace.equals("}")) {
+            findAndCheckSemicolon(withoutStartingSpace, whichLine);
+        }
+    }
+
+    public static void checkSemicolon(String line, int whichLine) {
+        String withoutStartingSpace = removeStartingSpace(line);
+        if (line.contains("package")) {
+            findAndCheckSemicolon(withoutStartingSpace, whichLine);
+        } else if (line.contains("import")) {
+            findAndCheckSemicolon(withoutStartingSpace, whichLine);
+        } else if (findVariables(withoutStartingSpace) == true) {
             findAndCheckSemicolon(withoutStartingSpace, whichLine);
         }
     }
@@ -266,19 +249,16 @@ public class Main {
 
     public static void checkPackage(int whichLine, int emptyLine) {
         if (whichLine != 1 && whichLine - emptyLine == 1) {
-            System.out.println("Your package in line " + whichLine + " is not wrong but it is better to" +
-                    " move it to the first line!");
+            System.out.println("It is better to move your package from line " + whichLine + " into first line");
             System.out.println("_____________________________________________________________________");
         } else if (whichLine != 1 && whichLine - emptyLine != 1) {
-            System.out.println("Your package location in line " + whichLine + " is not true!");
-            System.out.println("Please move it to the first line!");
+            System.out.println("Your package location in line " + whichLine + " is not true!move it to the first line!");
             System.out.println("_____________________________________________________________________");
         }
     }
 
     public static void writeImportError(int whichLine) {
         System.out.println("Your import location in line " + whichLine + " is not true!");
-        System.out.println("Import line must be after package and without any lines except blank lines");
         System.out.println("_____________________________________________________________________");
     }
 
@@ -398,8 +378,7 @@ public class Main {
         line.setForLine(forLine);
         if (!line.forRegex()) {
             System.out.println("The location of " + line.findForProblem() + "in the for loop in line " + whichLine
-                    + " is incorrect!");
-            System.out.println("You have to write for loop exactly in this form: for(some characters){");
+                    + " is incorrect! You have to write for loop exactly in this form: for(some characters){");
             System.out.println("_____________________________________________________________________");
         }
     }
@@ -428,8 +407,7 @@ public class Main {
             toForVariable.setForVariable(isThereForVariable(line));
             if (toForVariable.forVariableRegex() == false) {
                 System.out.println("(" + isThereForVariable(line) + ")" + " as a for variable name in line "
-                        + whichLine + " is wrong!");
-                System.out.println("For variable name must be lowerCamelCase");
+                        + whichLine + " is wrong! For variable name must be lowerCamelCase");
                 System.out.println("_____________________________________________________________________");
             }
         }
@@ -440,8 +418,7 @@ public class Main {
         line.setWhileLine(whileLine);
         if (!line.whileRegex()) {
             System.out.println("The location of " + line.findWhileProblem() + "in the while loop in line " + whichLine
-                    + " is incorrect!");
-            System.out.println("You have to write while loop exactly in this form: while(some characters){");
+                    + " is incorrect! You have to write while loop exactly in this form: while(some characters){");
             System.out.println("_____________________________________________________________________");
         }
     }
@@ -451,8 +428,7 @@ public class Main {
         line.setIfLine(ifLine);
         if (!line.ifRegex()) {
             System.out.println("The location of " + line.findIfProblem() + "in the if condition in line " + whichLine
-                    + " is incorrect!");
-            System.out.println("You have to write if condition exactly in this form: if(some characters){");
+                    + " is incorrect! You have to write if condition exactly in this form: if(some characters){");
             System.out.println("_____________________________________________________________________");
         }
     }
@@ -464,8 +440,7 @@ public class Main {
             System.out.println("The location of " + line.findElseProblem(elseOrElseIf) + "in the else condition in line "
                     + whichLine + " is incorrect!");
             if (elseOrElseIf == 1) {
-                System.out.println("You have to write else if condition exactly in this form:" +
-                        " else if(some characters){");
+                System.out.println("You have to write else if condition exactly in this form:else if(some characters){");
             } else if (elseOrElseIf == 2) {
                 System.out.println("You have to write else condition exactly in this form: else{");
             }
@@ -485,8 +460,7 @@ public class Main {
         line.setSwitchLine(switchLine);
         if (!line.switchRegex()) {
             System.out.println("The location of " + line.findSwitchProblem() + "in switch in line " + whichLine
-                    + " is incorrect!");
-            System.out.println("You have to write switch exactly in this form: switch(some characters){");
+                    + " is incorrect! You have to write switch exactly in this form: switch(some characters){");
             System.out.println("_____________________________________________________________________");
         }
     }
@@ -499,8 +473,7 @@ public class Main {
     }
 
     public static void printDefaultError(int whichLine) {
-        System.out.println("There is no default for your previous switch in " + whichLine);
-        System.out.println("Please add a default");
+        System.out.println("There is no default for your previous switch in " + whichLine + "!Please add a default");
         System.out.println("_____________________________________________________________________");
     }
 

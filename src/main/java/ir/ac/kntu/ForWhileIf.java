@@ -3,10 +3,15 @@ package ir.ac.kntu;
 public class ForWhileIf {
 
     private String forLine;
+
     private String forVariable;
+
     private String whileLine;
+
     private String ifLine;
+
     private String elseLine;
+
     private String switchLine;
 
     public ForWhileIf() {
@@ -113,16 +118,17 @@ public class ForWhileIf {
             if (elseLine.charAt(elseLine.length() - 1) != '{') {
                 problems += "{ ";
             }
-        } else {
-            if (elseLine.charAt(4) != '{') ;
+        } else if (elseLine.charAt(4) != '{') {
             problems += "{ ";
         }
         return problems;
     }
+
     public boolean switchRegex(){
         return this.switchLine.matches("switch\\S(.+)\\{");
     }
-    public String findSwitchProblem(){
+
+    public String findSwitchProblem() {
         String problems = "";
         if (switchLine.charAt(6) != '(') {
             problems += "( ";
