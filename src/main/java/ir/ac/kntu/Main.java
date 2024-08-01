@@ -35,7 +35,7 @@ public class Main {
                 }
                 tab = findNumberOfTabs(line, tab);
                 LengthChecking lengthChecking = new LengthChecking();
-                lengthChecking.checkLineLength(line,countLine);
+                lengthChecking.checkLineLength(line, countLine);
                 checkCloseBraces(removeStartingSpace(line), countLine);
                 checkAll(line, countLine, countEmptyLine, countForImport);
                 checkSemicolon(line, countLine);
@@ -87,17 +87,18 @@ public class Main {
 
     public static void checkAll(String line, int whichLine, int empty, int forImport) {
         String withoutStartingSpace = removeStartingSpace(line);
+        withoutStartingSpace = withoutStartingSpace.replaceAll("\\s+", " ");
+        VariableChecking variableChecking = new VariableChecking();
         if (line.contains("package")) {
             checkPackage(whichLine, empty);
         } else if (line.contains("import") && forImport != whichLine) {
             writeImportError(whichLine);
-        } else if (findVariables(withoutStartingSpace) == true) {
-            findAndCheckVariableName(withoutStartingSpace, whichLine);
+        } else if (variableChecking.canFindVariable(withoutStartingSpace) == true) {
+            variableChecking.findAndCheckVariableName(withoutStartingSpace, whichLine);
         } else if (line.contains("public")) {
             checkNames(withoutStartingSpace, whichLine);
         } else if (line.contains("for")) {
             checkForLoop(withoutStartingSpace, whichLine);
-            checkForVariable(withoutStartingSpace, whichLine);
         } else if (line.contains("while")) {
             checkWhileLine(withoutStartingSpace, whichLine);
         } else if (withoutStartingSpace.length() > 1 && withoutStartingSpace.substring(0, 2).equals("if")) {
@@ -133,11 +134,12 @@ public class Main {
 
     public static void checkSemicolon(String line, int whichLine) {
         String withoutStartingSpace = removeStartingSpace(line);
+        VariableChecking variableChecking = new VariableChecking();
         if (line.contains("package")) {
             findAndCheckSemicolon(withoutStartingSpace, whichLine);
         } else if (line.contains("import")) {
             findAndCheckSemicolon(withoutStartingSpace, whichLine);
-        } else if (findVariables(withoutStartingSpace) == true) {
+        } else if (variableChecking.canFindVariable(withoutStartingSpace) == true) {
             findAndCheckSemicolon(withoutStartingSpace, whichLine);
         }
     }
@@ -189,31 +191,6 @@ public class Main {
         System.out.println("_____________________________________________________________________");
     }
 
-    public static boolean findVariables(String line) {
-        String[] lineToArray = line.split(" ");
-        String firstWord = lineToArray[0];
-        NamingStyle toFind = new NamingStyle();
-        toFind.setIsVariable(firstWord);
-        return toFind.canFindVariable();
-    }
-
-    public static void findAndCheckVariableName(String line, int whichLine) {
-        String[] lineToArray = line.split(" ");
-        String includeName = lineToArray[1];
-        String name = "";
-        int i = 0;
-        while (i < includeName.length() && includeName.charAt(i) != ';' && includeName.charAt(i) != '=') {
-            name += includeName.charAt(i);
-            i++;
-        }
-        NamingStyle variableName = new NamingStyle();
-        variableName.setVariableName(name);
-        if (!variableName.variableNameRegex()) {
-            System.out.println("(" + name + ")" + " as a variable name in line " + whichLine + " is wrong!");
-            System.out.println("Variable name must be lowerCamelCase and at least two characters");
-            System.out.println("_____________________________________________________________________");
-        }
-    }
 
     public static void checkNames(String line, int whichLine) {
         String[] lineToArray = line.split(" ");
@@ -310,35 +287,6 @@ public class Main {
         }
     }
 
-    public static String isThereForVariable(String line) {
-        NamingStyle toFind = new NamingStyle();
-        for (int i = 3; i < 9; i++) {
-            for (int j = 0; j + i < line.length(); j++) {
-                toFind.setIsVariable(line.substring(j, j + i));
-                if (toFind.canFindVariable()) {
-                    String variable = "";
-                    while (line.charAt(j + i + 1) != '=' && line.charAt(j + i + 1) != ' ') {
-                        variable += line.charAt(j + i + 1);
-                        i++;
-                    }
-                    return variable;
-                }
-            }
-        }
-        return "cant find";
-    }
-
-    public static void checkForVariable(String line, int whichLine) {
-        if (!isThereForVariable(line).equals("cant find")) {
-            ForWhileIf toForVariable = new ForWhileIf();
-            toForVariable.setForVariable(isThereForVariable(line));
-            if (toForVariable.forVariableRegex() == false) {
-                System.out.println("(" + isThereForVariable(line) + ")" + " as a for variable name in line "
-                        + whichLine + " is wrong! For variable name must be lowerCamelCase");
-                System.out.println("_____________________________________________________________________");
-            }
-        }
-    }
 
     public static void checkWhileLine(String whileLine, int whichLine) {
         ForWhileIf line = new ForWhileIf();
