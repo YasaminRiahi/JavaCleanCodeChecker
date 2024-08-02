@@ -19,7 +19,7 @@ public class ElseIfChecking {
 
     public void checkElseLine(String elseLine, int whichLine, int elseOrElseIf) {
         ForWhileIf line = new ForWhileIf();
-        line.setElseLine(elseLine);
+        this.elseLine = elseLine;
         if (!elseRegex()) {
             System.out.println("The location of " + findElseProblem(elseOrElseIf) + "in the else condition in line "
                     + whichLine + " is incorrect!");
