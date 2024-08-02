@@ -4,7 +4,6 @@ public class ForWhileIf {
 
     private String whileLine;
 
-    private String switchLine;
 
     public ForWhileIf() {
 
@@ -12,10 +11,6 @@ public class ForWhileIf {
 
     public void setWhileLine(String whileLine) {
         this.whileLine = whileLine;
-    }
-
-    public void setSwitchLine(String switchLine) {
-        this.switchLine = switchLine;
     }
 
     public boolean whileRegex() {
@@ -31,24 +26,6 @@ public class ForWhileIf {
             problems += "{ ";
         }
         if (whileLine.charAt(whileLine.length() - 1) != '{') {
-            problems += "{ ";
-        }
-        return problems;
-    }
-
-    public boolean switchRegex(){
-        return this.switchLine.matches("switch\\S(.+)\\{");
-    }
-
-    public String findSwitchProblem() {
-        String problems = "";
-        if (switchLine.charAt(6) != '(') {
-            problems += "( ";
-        }
-        if (switchLine.charAt(switchLine.length() - 2) != ')' && switchLine.charAt(switchLine.length() - 1) == '{') {
-            problems += "{ ";
-        }
-        if (switchLine.charAt(switchLine.length() - 1) != '{') {
             problems += "{ ";
         }
         return problems;

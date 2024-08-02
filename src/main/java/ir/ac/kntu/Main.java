@@ -92,6 +92,7 @@ public class Main {
         VariableChecking variableChecking = new VariableChecking();
         ElseIfChecking elseIfChecking = new ElseIfChecking();
         ForChecking forChecking = new ForChecking();
+        SwitchCaseChecking switchCaseChecking = new SwitchCaseChecking();
         if (line.contains("package")) {
             checkPackage(whichLine, empty);
         } else if (line.contains("import") && forImport != whichLine) {
@@ -122,14 +123,14 @@ public class Main {
         } else if (line.contains("switch")) {
             switchCount++;
             if (switchCount > 1) {
-                printDefaultError(whichLine);
+                switchCaseChecking.printDefaultError(whichLine);
             }
-            checkSwitchLine(withoutStartingSpace, whichLine);
+            switchCaseChecking.checkSwitchLine(withoutStartingSpace, whichLine);
         } else if (line.contains("default")) {
             switchCount--;
             findAndCheckSemicolon(withoutStartingSpace, whichLine);
         } else if (line.contains("case")) {
-            checkCase(withoutStartingSpace, whichLine);
+            switchCaseChecking.checkCase(withoutStartingSpace, whichLine);
         } else if (!line.equals("") && !withoutStartingSpace.equals("}")) {
             findAndCheckSemicolon(withoutStartingSpace, whichLine);
         }
@@ -290,31 +291,6 @@ public class Main {
                     + " is incorrect! You have to write while loop exactly in this form: while(some characters){");
             System.out.println("_____________________________________________________________________");
         }
-    }
-
-
-
-
-    public static void checkSwitchLine(String switchLine, int whichLine) {
-        ForWhileIf line = new ForWhileIf();
-        line.setSwitchLine(switchLine);
-        if (!line.switchRegex()) {
-            System.out.println("The location of " + line.findSwitchProblem() + "in switch in line " + whichLine
-                    + " is incorrect! You have to write switch exactly in this form: switch(some characters){");
-            System.out.println("_____________________________________________________________________");
-        }
-    }
-
-    public static void checkCase(String caseLine, int whichLine) {
-        if (caseLine.charAt(caseLine.length() - 1) != ':') {
-            System.out.println("You have to write : exactly at the end of line " + whichLine);
-            System.out.println("_____________________________________________________________________");
-        }
-    }
-
-    public static void printDefaultError(int whichLine) {
-        System.out.println("There is no default for your previous switch in " + whichLine + "!Please add a default");
-        System.out.println("_____________________________________________________________________");
     }
 
     public static void checkCloseBraces(String line, int whichLine) {
