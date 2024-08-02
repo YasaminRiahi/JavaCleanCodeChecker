@@ -93,6 +93,7 @@ public class Main {
         ElseIfChecking elseIfChecking = new ElseIfChecking();
         ForChecking forChecking = new ForChecking();
         SwitchCaseChecking switchCaseChecking = new SwitchCaseChecking();
+        WhileChecking whileChecking = new WhileChecking();
         if (line.contains("package")) {
             checkPackage(whichLine, empty);
         } else if (line.contains("import") && forImport != whichLine) {
@@ -104,7 +105,7 @@ public class Main {
         } else if (line.contains("for")) {
             forChecking.checkForLoop(withoutStartingSpace, whichLine);
         } else if (line.contains("while")) {
-            checkWhileLine(withoutStartingSpace, whichLine);
+            whileChecking.checkWhileLine(withoutStartingSpace, whichLine);
         } else if (withoutStartingSpace.length() > 1 && withoutStartingSpace.substring(0, 2).equals("if")) {
             elseIfChecking.checkIfLine(withoutStartingSpace, whichLine);
         } else if (line.contains("else") && withoutStartingSpace.charAt(0) != '}') {
@@ -280,17 +281,6 @@ public class Main {
             }
         }
         return find[1];
-    }
-
-
-    public static void checkWhileLine(String whileLine, int whichLine) {
-        ForWhileIf line = new ForWhileIf();
-        line.setWhileLine(whileLine);
-        if (!line.whileRegex()) {
-            System.out.println("The location of " + line.findWhileProblem() + "in the while loop in line " + whichLine
-                    + " is incorrect! You have to write while loop exactly in this form: while(some characters){");
-            System.out.println("_____________________________________________________________________");
-        }
     }
 
     public static void checkCloseBraces(String line, int whichLine) {
