@@ -9,6 +9,7 @@ public class Main {
     public static int switchCount = 0;
 
     public static void main(String[] args) {
+        TabChecking tabChecking = new TabChecking();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the name of the file you want to check : ");
         String fileName = scanner.nextLine();
@@ -29,12 +30,12 @@ public class Main {
                 countLine++;
                 if (removeStartingSpace(line).length() > 0 && removeStartingSpace(line).charAt(0) == '}') {
                     tab -= 4;
-                    isTabEnough(line, tab, countLine);
+                    tabChecking.isTabEnough(line, tab, countLine);
                     tab += 4;
                 } else {
-                    isTabEnough(line, tab, countLine);
+                    tabChecking.isTabEnough(line, tab, countLine);
                 }
-                tab = findNumberOfTabs(line, tab);
+                tab = tabChecking.findNumberOfTabs(line, tab);
                 LengthChecking lengthChecking = new LengthChecking();
                 lengthChecking.checkLineLength(line, countLine);
                 checkCloseBraces(removeStartingSpace(line), countLine);
@@ -49,41 +50,6 @@ public class Main {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    public static int findNumberOfTabs(String line, int tab) {
-        if (!line.equals("")) {
-            for (int i = 0; i < line.length(); i++) {
-                if (line.charAt(i) == '{') {
-                    tab += 4;
-                } else if (i + 3 < line.length() && line.substring(i, i + 4).equals("case")) {
-                    tab += 4;
-                } else if (line.charAt(i) == '}') {
-                    tab -= 4;
-                } else if (i + 4 < line.length() && line.substring(i, i + 5).equals("break")) {
-                    tab -= 4;
-                }
-            }
-        }
-        return tab;
-    }
-
-    public static void isTabEnough(String line, int tab, int whichLine) {
-        int i = 0, count = 0;
-        if (!line.equals("")) {
-            while (i < line.length() && line.charAt(i) == ' ') {
-                count++;
-                i++;
-            }
-            if (count != tab) {
-                if (count > tab) {
-                    System.out.println("Please remove " + (count - tab) + " space(s) in line " + whichLine);
-                } else {
-                    System.out.println("Please add " + (tab - count) + " space(s) in line " + whichLine);
-                }
-                System.out.println("_____________________________________________________________________");
-            }
         }
     }
 
