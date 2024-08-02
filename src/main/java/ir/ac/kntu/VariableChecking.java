@@ -4,6 +4,12 @@ public class VariableChecking {
 
     private int indexOfVariable;
 
+    private String variableName;
+
+    public void setVariableName(String variableName) {
+        this.variableName = variableName;
+    }
+
     public boolean canFindVariable(String line) {
         String[] isVariable = line.split(" ");
         for (int i = 0; i < isVariable.length; i++) {
@@ -42,13 +48,32 @@ public class VariableChecking {
             name += includeName.charAt(i);
             i++;
         }
-        NamingStyle variableName = new NamingStyle();
-        variableName.setVariableName(name);
-        if (!variableName.variableNameRegex()) {
-            System.out.println("(" + name + ")" + " as a variable name in line " + whichLine + " is wrong!");
-            System.out.println("Variable name must be lowerCamelCase and at least two characters");
-            System.out.println("_____________________________________________________________________");
+        this.variableName = name;
+        if (line.contains("for")) {
+            if (!forVariableRegex()) {
+                System.out.println("(" + name + ")" + " as a for variable name in line "
+                        + whichLine + " is wrong!");
+                System.out.println("For variable name must be lowerCamelCase");
+                System.out.println("_____________________________________________________________________");
+            }
+        } else {
+            if (!variableNameRegex()) {
+                System.out.println("(" + name + ")" + " as a variable name in line " + whichLine + " is wrong!");
+                System.out.println("Variable name must be lowerCamelCase and at least two characters");
+                System.out.println("_____________________________________________________________________");
+            }
         }
+    }
+
+
+    public boolean variableNameRegex() {
+        return this.variableName.matches("([a-z]{2,})|([a-z]+[A-Z]{1}[a-z]*)|" +
+                "([a-z]+[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*)|([a-z]+[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*)");
+    }
+
+    public boolean forVariableRegex() {
+        return this.variableName.matches("(([a-z]+)|[a-z]+[A-Z]{1}[a-z]*)|" +
+                "([a-z]+[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*)|([a-z]+[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*)");
     }
 
 }

@@ -29,9 +29,4 @@ public class NamingStyle {
         return this.methodName.matches("([a-z]{2,})|([a-z]+[A-Z]{1}[a-z]*)|" +
                 "([a-z]+[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*)|([a-z]+[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*)");
     }
-
-    public boolean variableNameRegex() {
-        return this.variableName.matches("([a-z]{2,})|([a-z]+[A-Z]{1}[a-z]*)|" +
-                "([a-z]+[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*)|([a-z]+[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*)");
-    }
 }

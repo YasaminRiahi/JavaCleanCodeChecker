@@ -91,6 +91,7 @@ public class Main {
         withoutStartingSpace = withoutStartingSpace.replaceAll("\\s+", " ");
         VariableChecking variableChecking = new VariableChecking();
         ElseIfChecking elseIfChecking = new ElseIfChecking();
+        ForChecking forChecking = new ForChecking();
         if (line.contains("package")) {
             checkPackage(whichLine, empty);
         } else if (line.contains("import") && forImport != whichLine) {
@@ -100,7 +101,7 @@ public class Main {
         } else if (line.contains("public")) {
             checkNames(withoutStartingSpace, whichLine);
         } else if (line.contains("for")) {
-            checkForLoop(withoutStartingSpace, whichLine);
+            forChecking.checkForLoop(withoutStartingSpace, whichLine);
         } else if (line.contains("while")) {
             checkWhileLine(withoutStartingSpace, whichLine);
         } else if (withoutStartingSpace.length() > 1 && withoutStartingSpace.substring(0, 2).equals("if")) {
@@ -200,7 +201,8 @@ public class Main {
             findAndCheckClassName(lineToArray[2], whichLine);
         } else if (lineToArray[2].equals("void") && !lineToArray[3].substring(0, 4).equals("main")) {
             findAndCheckMethodName(lineToArray[3], whichLine);
-        } else if (!lineToArray[2].equals("void") && !lineToArray[3].substring(0, 4).equals("main")) {
+            checkInputsNames(line, whichLine);
+        } else if (!lineToArray[3].substring(0, 4).equals("main")) {
             findAndCheckMethodName(lineToArray[3], whichLine);
             checkInputsNames(line, whichLine);
         }
@@ -241,7 +243,7 @@ public class Main {
     public static void checkInputsNames(String line, int whichLine) {
         String inputs = findInputs(line);
         String[] separateInputs = inputs.split(",");
-        NamingStyle input = new NamingStyle();
+        VariableChecking input = new VariableChecking();
         for (int i = 0; i < separateInputs.length; i++) {
             String name = findName(separateInputs[i]);
             input.setVariableName(name);
@@ -277,16 +279,6 @@ public class Main {
             }
         }
         return find[1];
-    }
-
-    public static void checkForLoop(String forLine, int whichLine) {
-        ForWhileIf line = new ForWhileIf();
-        line.setForLine(forLine);
-        if (!line.forRegex()) {
-            System.out.println("The location of " + line.findForProblem() + "in the for loop in line " + whichLine
-                    + " is incorrect! You have to write for loop exactly in this form: for(some characters){");
-            System.out.println("_____________________________________________________________________");
-        }
     }
 
 
