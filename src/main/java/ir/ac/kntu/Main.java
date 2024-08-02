@@ -69,13 +69,13 @@ public class Main {
             writeImportError(whichLine);
         } else if (line.contains("public")) {
             nameChecking.checkNames(withoutStartingSpace, whichLine);
-        } else if (variableChecking.canFindVariable(withoutStartingSpace) == true) {
+        } else if (variableChecking.canFindVariable(withoutStartingSpace)) {
             variableChecking.findAndCheckVariableName(withoutStartingSpace, whichLine);
         } else if (line.contains("for")) {
             forChecking.checkForLoop(withoutStartingSpace, whichLine);
         } else if (line.contains("while")) {
             whileChecking.checkWhileLine(withoutStartingSpace, whichLine);
-        } else if (withoutStartingSpace.length() > 1 && withoutStartingSpace.substring(0, 2).equals("if")) {
+        } else if (withoutStartingSpace.startsWith("if")) {
             elseIfChecking.checkIfLine(withoutStartingSpace, whichLine);
         } else if (line.contains("else") && withoutStartingSpace.charAt(0) != '}') {
             elseIfChecking.moveElse(whichLine);
@@ -86,9 +86,9 @@ public class Main {
             }
         } else if (line.contains("else") && withoutStartingSpace.charAt(0) == '}') {
             if (line.contains("else if")) {
-                elseIfChecking.checkElseLine(withoutStartingSpace.substring(1, withoutStartingSpace.length()), whichLine, 1);
+                elseIfChecking.checkElseLine(withoutStartingSpace.substring(1), whichLine, 1);
             } else {
-                elseIfChecking.checkElseLine(withoutStartingSpace.substring(1, withoutStartingSpace.length()), whichLine, 2);
+                elseIfChecking.checkElseLine(withoutStartingSpace.substring(1), whichLine, 2);
             }
         } else if (line.contains("switch")) {
             switchCount++;

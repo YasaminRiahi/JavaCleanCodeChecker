@@ -18,13 +18,13 @@ public class NameChecking {
     }
 
     public void findAndCheckClassName(String includeName, int whichLine) {
-        String name = "";
+        StringBuilder name = new StringBuilder();
         for (int i = 0; i < includeName.length(); i++) {
             if (includeName.charAt(i) != ' ' && includeName.charAt(i) != '{') {
-                name += includeName.charAt(i);
+                name.append(includeName.charAt(i));
             }
         }
-        this.className = name;
+        this.className = name.toString();
         if (!classNameRegex()) {
             System.out.println("(" + name + ")" + " as a class name in line " + whichLine + " is wrong!");
             System.out.println("Class name must be UpperCamelCase");
@@ -33,13 +33,13 @@ public class NameChecking {
     }
 
     public void findAndCheckMethodName(String includeName, int whichLine) {
-        String name = "";
+        StringBuilder name = new StringBuilder();
         int i = 0;
         while (i < includeName.length() && includeName.charAt(i) != '(') {
-            name += includeName.charAt(i);
+            name.append(includeName.charAt(i));
             i++;
         }
-        this.methodName = name;
+        this.methodName = name.toString();
         if (!methodNameRegex()) {
             System.out.println("(" + name + ")" + " as a method name in line " + whichLine + " is wrong!");
             System.out.println("Method name must be lowerCamelCase");
@@ -51,8 +51,8 @@ public class NameChecking {
         String inputs = findInputs(line);
         String[] separateInputs = inputs.split(",");
         VariableChecking input = new VariableChecking();
-        for (int i = 0; i < separateInputs.length; i++) {
-            String name = findName(separateInputs[i]);
+        for (String separateInput : separateInputs) {
+            String name = findName(separateInput);
             input.setVariableName(name);
             if (!input.variableNameRegex()) {
                 System.out.println("(" + name + ")" + " as a variable name in line " + whichLine + " is wrong!");
@@ -63,17 +63,17 @@ public class NameChecking {
     }
 
     public String findInputs(String line) {
-        String input = "";
+        StringBuilder input = new StringBuilder();
         int i = 0;
         while (line.charAt(i) != '(') {
             i++;
         }
         i++;
         while (line.charAt(i) != ')') {
-            input += line.charAt(i);
+            input.append(line.charAt(i));
             i++;
         }
-        return input;
+        return input.toString();
     }
 
     public String findName(String input) {
@@ -88,7 +88,7 @@ public class NameChecking {
     }
 
     public boolean methodNameRegex() {
-        return this.methodName.matches("([a-z]{2,})|([a-z]+[A-Z]{1}[a-z]*)|" +
-                "([a-z]+[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*)|([a-z]+[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*[A-Z]{1}[a-z]*)");
+        return this.methodName.matches("([a-z]{2,})|([a-z]+[A-Z][a-z]*)|" +
+                "([a-z]+[A-Z][a-z]*[A-Z][a-z]*)|([a-z]+[A-Z][a-z]*[A-Z][a-z]*[A-Z][a-z]*)");
     }
 }

@@ -2,17 +2,16 @@ package ir.ac.kntu;
 
 public class TabChecking {
 
-
-    public static int findNumberOfTabs(String line, int tab) {
+    public int findNumberOfTabs(String line, int tab) {
         if (!line.equals("")) {
             for (int i = 0; i < line.length(); i++) {
                 if (line.charAt(i) == '{') {
                     tab += 4;
-                } else if (i + 3 < line.length() && line.substring(i, i + 4).equals("case")) {
+                } else if (i + 3 < line.length() && line.startsWith("case", i)) {
                     tab += 4;
                 } else if (line.charAt(i) == '}') {
                     tab -= 4;
-                } else if (i + 4 < line.length() && line.substring(i, i + 5).equals("break")) {
+                } else if (i + 4 < line.length() && line.startsWith("break", i)) {
                     tab -= 4;
                 }
             }
@@ -20,7 +19,7 @@ public class TabChecking {
         return tab;
     }
 
-    public static void isTabEnough(String line, int tab, int whichLine) {
+    public void isTabEnough(String line, int tab, int whichLine) {
         int i = 0, count = 0;
         if (!line.equals("")) {
             while (i < line.length() && line.charAt(i) == ' ') {

@@ -9,10 +9,11 @@ public class SemicolonChecking {
             findAndCheckSemicolon(withoutStartingSpace, whichLine);
         } else if (line.contains("import")) {
             findAndCheckSemicolon(withoutStartingSpace, whichLine);
-        } else if (variableChecking.canFindVariable(withoutStartingSpace) == true) {
+        } else if (variableChecking.canFindVariable(withoutStartingSpace)) {
             findAndCheckSemicolon(withoutStartingSpace, whichLine);
         }
     }
+
     public void findAndCheckSemicolon(String line, int whichLine) {
         moreSemicolon(line, whichLine);
         if (line.charAt(line.length() - 1) != ';') {

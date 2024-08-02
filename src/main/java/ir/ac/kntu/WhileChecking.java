@@ -13,9 +13,6 @@ public class WhileChecking {
             System.out.println("_____________________________________________________________________");
         }
     }
-    public void setWhileLine(String whileLine) {
-        this.whileLine = whileLine;
-    }
 
     public boolean whileRegex() {
         return this.whileLine.matches("while\\S(.+)\\{");
@@ -35,4 +32,3 @@ public class WhileChecking {
         return problems;
     }
 }
-

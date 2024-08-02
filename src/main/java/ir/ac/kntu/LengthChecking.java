@@ -44,24 +44,24 @@ public class LengthChecking {
 
     public String breakLines(String beforeBreaking, int howManySpace) {
         for (int j = beforeBreaking.length() - 1; j >= 0; j--) {
-            if (isOkToBreak(beforeBreaking.charAt(j)) == true && j <= 80) {
-                String newLine = "";
+            if (isOkToBreak(beforeBreaking.charAt(j)) && j <= 80) {
+                StringBuilder newLine = new StringBuilder();
                 while (howManySpace != 0) {
-                    newLine += " ";
+                    newLine.append(" ");
                     howManySpace--;
                 }
                 if (beforeBreaking.charAt(j) != ',') {
                     System.out.println("You can break this line from character " + (j - 1) + ":" + beforeBreaking.charAt(j - 1));
                     for (int p = j; p < beforeBreaking.length(); p++) {
-                        newLine += beforeBreaking.charAt(p);
+                        newLine.append(beforeBreaking.charAt(p));
                     }
                 } else {
                     System.out.println("You can break this line from character " + j + ":" + beforeBreaking.charAt(j));
                     for (int p = j + 1; p < beforeBreaking.length(); p++) {
-                        newLine += beforeBreaking.charAt(p);
+                        newLine.append(beforeBreaking.charAt(p));
                     }
                 }
-                return newLine;
+                return newLine.toString();
             }
         }
         return "nothing";
@@ -70,10 +70,7 @@ public class LengthChecking {
     public boolean isOkToBreak(char character) {
         if (character == '+' || character == '-' || character == '*' || character == '/' || character == '%') {
             return true;
-        } else if (character == '^' || character == '&' || character == '|' || character == ',') {
-            return true;
-        }
-        return false;
+        } else return character == '^' || character == '&' || character == '|' || character == ',';
     }
 
     public String removeStartingSpace(String line) {

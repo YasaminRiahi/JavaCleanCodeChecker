@@ -2,11 +2,9 @@ package ir.ac.kntu;
 
 public class ElseIfChecking {
 
-
     private String ifLine;
 
     private String elseLine;
-
 
     public void checkIfLine(String ifLine, int whichLine) {
         this.ifLine = ifLine;
