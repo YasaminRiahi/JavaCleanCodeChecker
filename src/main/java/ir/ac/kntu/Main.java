@@ -39,7 +39,8 @@ public class Main {
                 lengthChecking.checkLineLength(line, countLine);
                 checkCloseBraces(removeStartingSpace(line), countLine);
                 checkAll(line, countLine, countEmptyLine, countForImport);
-                checkSemicolon(line, countLine);
+                SemicolonChecking semicolonChecking = new SemicolonChecking();
+                semicolonChecking.checkSemicolon(line, countLine);
                 line = reader.readLine();
             }
             if (switchCount != 0) {
@@ -95,6 +96,7 @@ public class Main {
         SwitchCaseChecking switchCaseChecking = new SwitchCaseChecking();
         WhileChecking whileChecking = new WhileChecking();
         NameChecking nameChecking = new NameChecking();
+        SemicolonChecking semicolonChecking = new SemicolonChecking();
         if (line.contains("package")) {
             checkPackage(whichLine, empty);
         } else if (line.contains("import") && forImport != whichLine) {
@@ -130,23 +132,11 @@ public class Main {
             switchCaseChecking.checkSwitchLine(withoutStartingSpace, whichLine);
         } else if (line.contains("default")) {
             switchCount--;
-            findAndCheckSemicolon(withoutStartingSpace, whichLine);
+            semicolonChecking.findAndCheckSemicolon(withoutStartingSpace, whichLine);
         } else if (line.contains("case")) {
             switchCaseChecking.checkCase(withoutStartingSpace, whichLine);
         } else if (!line.equals("") && !withoutStartingSpace.equals("}")) {
-            findAndCheckSemicolon(withoutStartingSpace, whichLine);
-        }
-    }
-
-    public static void checkSemicolon(String line, int whichLine) {
-        String withoutStartingSpace = removeStartingSpace(line);
-        VariableChecking variableChecking = new VariableChecking();
-        if (line.contains("package")) {
-            findAndCheckSemicolon(withoutStartingSpace, whichLine);
-        } else if (line.contains("import")) {
-            findAndCheckSemicolon(withoutStartingSpace, whichLine);
-        } else if (variableChecking.canFindVariable(withoutStartingSpace) == true) {
-            findAndCheckSemicolon(withoutStartingSpace, whichLine);
+            semicolonChecking.findAndCheckSemicolon(withoutStartingSpace, whichLine);
         }
     }
 
@@ -160,27 +150,6 @@ public class Main {
         return line.substring(count);
     }
 
-    public static void findAndCheckSemicolon(String line, int whichLine) {
-        moreSemicolon(line, whichLine);
-        if (line.charAt(line.length() - 1) != ';') {
-            System.out.println("You have to write ; exactly at the end of line " + whichLine);
-            System.out.println("_____________________________________________________________________");
-        }
-    }
-
-    public static void moreSemicolon(String line, int whichLine) {
-        int count = 0;
-        for (int i = 0; i < line.length(); i++) {
-            if (line.charAt(i) == ';') {
-                count++;
-            }
-        }
-        if (count > 1) {
-            System.out.println("You have more than one semicolon in line " + whichLine);
-            System.out.println("Please remove one of the semicolons or write each command on a separate line");
-            System.out.println("_____________________________________________________________________");
-        }
-    }
 
     public static void checkPackage(int whichLine, int emptyLine) {
         if (whichLine != 1 && whichLine - emptyLine == 1) {
