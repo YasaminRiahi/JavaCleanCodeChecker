@@ -8,10 +8,6 @@ public class ForWhileIf {
 
     private String whileLine;
 
-    private String ifLine;
-
-    private String elseLine;
-
     private String switchLine;
 
     public ForWhileIf() {
@@ -29,14 +25,6 @@ public class ForWhileIf {
 
     public void setWhileLine(String whileLine) {
         this.whileLine = whileLine;
-    }
-
-    public void setIfLine(String ifLine) {
-        this.ifLine = ifLine;
-    }
-
-    public void setElseLine(String elseLine) {
-        this.elseLine = elseLine;
     }
 
     public void setSwitchLine(String switchLine) {
@@ -79,46 +67,6 @@ public class ForWhileIf {
             problems += "{ ";
         }
         if (whileLine.charAt(whileLine.length() - 1) != '{') {
-            problems += "{ ";
-        }
-        return problems;
-    }
-
-    public boolean ifRegex() {
-        return this.ifLine.matches("if(.+)\\{");
-    }
-
-    public String findIfProblem() {
-        String problems = "";
-        if (ifLine.charAt(2) != '(') {
-            problems += "( ";
-        }
-        if (ifLine.charAt(ifLine.length() - 2) != ')' && ifLine.charAt(ifLine.length() - 1) == '{') {
-            problems += "{ ";
-        }
-        if (ifLine.charAt(ifLine.length() - 1) != '{') {
-            problems += "{ ";
-        }
-        return problems;
-    }
-
-    public boolean elseRegex() {
-        return this.elseLine.matches("(else\\S\\{)|(else if\\S(.+)\\{)");
-    }
-
-    public String findElseProblem(int elseOrElseIf) {
-        String problems = "";
-        if (elseOrElseIf == 1) {
-            if (elseLine.charAt(7) != '(') {
-                problems += "( ";
-            }
-            if (elseLine.charAt(elseLine.length() - 2) != ')' && elseLine.charAt(elseLine.length() - 1) == '{') {
-                problems += "{ ";
-            }
-            if (elseLine.charAt(elseLine.length() - 1) != '{') {
-                problems += "{ ";
-            }
-        } else if (elseLine.charAt(4) != '{') {
             problems += "{ ";
         }
         return problems;

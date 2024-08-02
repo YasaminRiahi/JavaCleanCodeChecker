@@ -10,6 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the name of the file you want to check : ");
         String fileName = scanner.nextLine();
         BufferedReader reader;
         try {
@@ -89,6 +90,7 @@ public class Main {
         String withoutStartingSpace = removeStartingSpace(line);
         withoutStartingSpace = withoutStartingSpace.replaceAll("\\s+", " ");
         VariableChecking variableChecking = new VariableChecking();
+        ElseIfChecking elseIfChecking = new ElseIfChecking();
         if (line.contains("package")) {
             checkPackage(whichLine, empty);
         } else if (line.contains("import") && forImport != whichLine) {
@@ -102,19 +104,19 @@ public class Main {
         } else if (line.contains("while")) {
             checkWhileLine(withoutStartingSpace, whichLine);
         } else if (withoutStartingSpace.length() > 1 && withoutStartingSpace.substring(0, 2).equals("if")) {
-            checkIfLine(withoutStartingSpace, whichLine);
+            elseIfChecking.checkIfLine(withoutStartingSpace, whichLine);
         } else if (line.contains("else") && withoutStartingSpace.charAt(0) != '}') {
-            moveElse(whichLine);
+            elseIfChecking.moveElse(whichLine);
             if (line.contains("else if")) {
-                checkElseLine(withoutStartingSpace, whichLine, 1);
+                elseIfChecking.checkElseLine(withoutStartingSpace, whichLine, 1);
             } else {
-                checkElseLine(withoutStartingSpace, whichLine, 2);
+                elseIfChecking.checkElseLine(withoutStartingSpace, whichLine, 2);
             }
         } else if (line.contains("else") && withoutStartingSpace.charAt(0) == '}') {
             if (line.contains("else if")) {
-                checkElseLine(withoutStartingSpace.substring(1, withoutStartingSpace.length()), whichLine, 1);
+                elseIfChecking.checkElseLine(withoutStartingSpace.substring(1, withoutStartingSpace.length()), whichLine, 1);
             } else {
-                checkElseLine(withoutStartingSpace.substring(1, withoutStartingSpace.length()), whichLine, 2);
+                elseIfChecking.checkElseLine(withoutStartingSpace.substring(1, withoutStartingSpace.length()), whichLine, 2);
             }
         } else if (line.contains("switch")) {
             switchCount++;
@@ -298,36 +300,7 @@ public class Main {
         }
     }
 
-    public static void checkIfLine(String ifLine, int whichLine) {
-        ForWhileIf line = new ForWhileIf();
-        line.setIfLine(ifLine);
-        if (!line.ifRegex()) {
-            System.out.println("The location of " + line.findIfProblem() + "in the if condition in line " + whichLine
-                    + " is incorrect! You have to write if condition exactly in this form: if(some characters){");
-            System.out.println("_____________________________________________________________________");
-        }
-    }
 
-    public static void checkElseLine(String elseLine, int whichLine, int elseOrElseIf) {
-        ForWhileIf line = new ForWhileIf();
-        line.setElseLine(elseLine);
-        if (!line.elseRegex()) {
-            System.out.println("The location of " + line.findElseProblem(elseOrElseIf) + "in the else condition in line "
-                    + whichLine + " is incorrect!");
-            if (elseOrElseIf == 1) {
-                System.out.println("You have to write else if condition exactly in this form:else if(some characters){");
-            } else if (elseOrElseIf == 2) {
-                System.out.println("You have to write else condition exactly in this form: else{");
-            }
-            System.out.println("_____________________________________________________________________");
-        }
-    }
-
-
-    public static void moveElse(int whichLine) {
-        System.out.println("Move your else statement in line " + whichLine + " exactly after the } of previous statement");
-        System.out.println("_____________________________________________________________________");
-    }
 
 
     public static void checkSwitchLine(String switchLine, int whichLine) {
