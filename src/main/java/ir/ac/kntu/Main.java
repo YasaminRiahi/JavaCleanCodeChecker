@@ -94,14 +94,15 @@ public class Main {
         ForChecking forChecking = new ForChecking();
         SwitchCaseChecking switchCaseChecking = new SwitchCaseChecking();
         WhileChecking whileChecking = new WhileChecking();
+        NameChecking nameChecking = new NameChecking();
         if (line.contains("package")) {
             checkPackage(whichLine, empty);
         } else if (line.contains("import") && forImport != whichLine) {
             writeImportError(whichLine);
+        } else if (line.contains("public")) {
+            nameChecking.checkNames(withoutStartingSpace, whichLine);
         } else if (variableChecking.canFindVariable(withoutStartingSpace) == true) {
             variableChecking.findAndCheckVariableName(withoutStartingSpace, whichLine);
-        } else if (line.contains("public")) {
-            checkNames(withoutStartingSpace, whichLine);
         } else if (line.contains("for")) {
             forChecking.checkForLoop(withoutStartingSpace, whichLine);
         } else if (line.contains("while")) {
@@ -194,93 +195,6 @@ public class Main {
     public static void writeImportError(int whichLine) {
         System.out.println("Your import location in line " + whichLine + " is not true!");
         System.out.println("_____________________________________________________________________");
-    }
-
-
-    public static void checkNames(String line, int whichLine) {
-        String[] lineToArray = line.split(" ");
-        if (lineToArray[1].equals("class")) {
-            findAndCheckClassName(lineToArray[2], whichLine);
-        } else if (lineToArray[2].equals("void") && !lineToArray[3].substring(0, 4).equals("main")) {
-            findAndCheckMethodName(lineToArray[3], whichLine);
-            checkInputsNames(line, whichLine);
-        } else if (!lineToArray[3].substring(0, 4).equals("main")) {
-            findAndCheckMethodName(lineToArray[3], whichLine);
-            checkInputsNames(line, whichLine);
-        }
-    }
-
-    public static void findAndCheckClassName(String includeName, int whichLine) {
-        String name = "";
-        for (int i = 0; i < includeName.length(); i++) {
-            if (includeName.charAt(i) != ' ' && includeName.charAt(i) != '{') {
-                name += includeName.charAt(i);
-            }
-        }
-        NamingStyle className = new NamingStyle();
-        className.setClassName(name);
-        if (!className.classNameRegex()) {
-            System.out.println("(" + name + ")" + " as a class name in line " + whichLine + " is wrong!");
-            System.out.println("Class name must be UpperCamelCase");
-            System.out.println("_____________________________________________________________________");
-        }
-    }
-
-    public static void findAndCheckMethodName(String includeName, int whichLine) {
-        String name = "";
-        int i = 0;
-        while (i < includeName.length() && includeName.charAt(i) != '(') {
-            name += includeName.charAt(i);
-            i++;
-        }
-        NamingStyle methodName = new NamingStyle();
-        methodName.setMethodName(name);
-        if (!methodName.methodNameRegex()) {
-            System.out.println("(" + name + ")" + " as a method name in line " + whichLine + " is wrong!");
-            System.out.println("Method name must be lowerCamelCase");
-            System.out.println("_____________________________________________________________________");
-        }
-    }
-
-    public static void checkInputsNames(String line, int whichLine) {
-        String inputs = findInputs(line);
-        String[] separateInputs = inputs.split(",");
-        VariableChecking input = new VariableChecking();
-        for (int i = 0; i < separateInputs.length; i++) {
-            String name = findName(separateInputs[i]);
-            input.setVariableName(name);
-            if (!input.variableNameRegex()) {
-                System.out.println("(" + name + ")" + " as a variable name in line " + whichLine + " is wrong!");
-                System.out.println("Variable name must be lowerCamelCase and at least two characters");
-                System.out.println("_____________________________________________________________________");
-            }
-        }
-    }
-
-    public static String findInputs(String line) {
-        String input = "";
-        int i = 0;
-        while (line.charAt(i) != '(') {
-            i++;
-        }
-        i++;
-        while (line.charAt(i) != ')') {
-            input += line.charAt(i);
-            i++;
-        }
-        return input;
-    }
-
-    public static String findName(String input) {
-        input = input.trim();
-        String[] find = input.split(" ");
-        if (find.length == 1) {
-            find = find[0].split("]");
-            if (find.length == 3) {
-                return find[2];
-            }
-        }
-        return find[1];
     }
 
     public static void checkCloseBraces(String line, int whichLine) {
